@@ -1,0 +1,505 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>TAP CODE</title>
+<style>
+  @import url('https://fonts.googleapis.com/css2?family=Share+Tech+Mono&family=Oswald:wght@300;600&display=swap');
+
+  *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+  :root {
+    --bg: #0e0e0e;
+    --surface: #161616;
+    --border: #2a2a2a;
+    --muted: #444;
+    --dim: #888;
+    --text: #d8d8d8;
+    --bright: #f0f0f0;
+    --accent: #e8e8e8;
+  }
+
+  body {
+    background: var(--bg);
+    color: var(--text);
+    font-family: 'Share Tech Mono', monospace;
+    min-height: 100vh;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    padding: 2rem 1rem 4rem;
+  }
+
+  header {
+    width: 100%;
+    max-width: 700px;
+    margin-bottom: 3rem;
+    border-bottom: 1px solid var(--border);
+    padding-bottom: 1.2rem;
+  }
+
+  header h1 {
+    font-family: 'Oswald', sans-serif;
+    font-weight: 600;
+    font-size: clamp(2rem, 8vw, 3.5rem);
+    letter-spacing: 0.25em;
+    color: var(--bright);
+    text-transform: uppercase;
+  }
+
+  header p {
+    font-size: 0.75rem;
+    color: var(--dim);
+    letter-spacing: 0.15em;
+    margin-top: 0.4rem;
+  }
+
+  .translator {
+    width: 100%;
+    max-width: 700px;
+    display: flex;
+    flex-direction: column;
+    gap: 0;
+  }
+
+  /* MODE TOGGLE */
+  .mode-bar {
+    display: flex;
+    border: 1px solid var(--border);
+    margin-bottom: -1px;
+  }
+
+  .mode-btn {
+    flex: 1;
+    padding: 0.65rem 1rem;
+    background: var(--surface);
+    border: none;
+    color: var(--dim);
+    font-family: 'Share Tech Mono', monospace;
+    font-size: 0.72rem;
+    letter-spacing: 0.12em;
+    cursor: pointer;
+    text-transform: uppercase;
+    transition: all 0.15s;
+    border-right: 1px solid var(--border);
+  }
+
+  .mode-btn:last-child { border-right: none; }
+
+  .mode-btn.active {
+    background: var(--bright);
+    color: var(--bg);
+    font-weight: bold;
+  }
+
+  /* PANELS */
+  .panel {
+    border: 1px solid var(--border);
+    background: var(--surface);
+  }
+
+  .panel-label {
+    font-size: 0.65rem;
+    letter-spacing: 0.2em;
+    color: var(--dim);
+    padding: 0.6rem 1rem 0.4rem;
+    border-bottom: 1px solid var(--border);
+    text-transform: uppercase;
+  }
+
+  textarea {
+    width: 100%;
+    background: transparent;
+    border: none;
+    outline: none;
+    color: var(--bright);
+    font-family: 'Share Tech Mono', monospace;
+    font-size: 1.1rem;
+    line-height: 1.7;
+    padding: 1rem;
+    resize: none;
+    min-height: 130px;
+  }
+
+  textarea::placeholder { color: var(--muted); }
+
+  /* ARROW */
+  .arrow-row {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    padding: 0.5rem;
+    border-left: 1px solid var(--border);
+    border-right: 1px solid var(--border);
+    background: var(--bg);
+    position: relative;
+  }
+
+  .arrow-row::before,
+  .arrow-row::after {
+    content: '';
+    flex: 1;
+    height: 1px;
+    background: var(--border);
+  }
+
+  .arrow-icon {
+    width: 32px;
+    height: 32px;
+    border: 1px solid var(--border);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    color: var(--dim);
+    font-size: 0.9rem;
+    margin: 0 0.8rem;
+    flex-shrink: 0;
+    cursor: pointer;
+    transition: all 0.15s;
+    user-select: none;
+  }
+
+  .arrow-icon:hover {
+    background: var(--border);
+    color: var(--bright);
+  }
+
+  /* OUTPUT */
+  .output-box {
+    border: 1px solid var(--border);
+    background: var(--bg);
+    position: relative;
+  }
+
+  .output-content {
+    padding: 1rem;
+    min-height: 130px;
+    font-size: 1.1rem;
+    line-height: 1.9;
+    color: var(--bright);
+    word-break: break-word;
+    white-space: pre-wrap;
+    letter-spacing: 0.05em;
+  }
+
+  .output-content.tap {
+    font-size: 1rem;
+    letter-spacing: 0.08em;
+    color: var(--accent);
+  }
+
+  .output-content .word-sep {
+    color: var(--muted);
+    margin: 0 0.2rem;
+    font-size: 0.8em;
+  }
+
+  .copy-btn {
+    position: absolute;
+    bottom: 0.6rem;
+    right: 0.6rem;
+    background: var(--border);
+    border: none;
+    color: var(--dim);
+    font-family: 'Share Tech Mono', monospace;
+    font-size: 0.62rem;
+    letter-spacing: 0.1em;
+    padding: 0.3rem 0.6rem;
+    cursor: pointer;
+    text-transform: uppercase;
+    transition: all 0.15s;
+  }
+
+  .copy-btn:hover { background: var(--muted); color: var(--bright); }
+  .copy-btn.copied { color: var(--bright); background: var(--muted); }
+
+  /* REFERENCE TABLE */
+  details {
+    width: 100%;
+    max-width: 700px;
+    margin-top: 2.5rem;
+    border: 1px solid var(--border);
+  }
+
+  summary {
+    padding: 0.7rem 1rem;
+    font-size: 0.68rem;
+    letter-spacing: 0.2em;
+    text-transform: uppercase;
+    color: var(--dim);
+    cursor: pointer;
+    background: var(--surface);
+    user-select: none;
+    list-style: none;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+  }
+
+  summary::after { content: '↓'; }
+  details[open] summary::after { content: '↑'; }
+
+  .ref-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(120px, 1fr));
+    gap: 0;
+    padding: 0;
+  }
+
+  .ref-cell {
+    padding: 0.55rem 0.8rem;
+    border-right: 1px solid var(--border);
+    border-bottom: 1px solid var(--border);
+    display: flex;
+    flex-direction: column;
+    gap: 0.1rem;
+  }
+
+  .ref-letter {
+    font-family: 'Oswald', sans-serif;
+    font-size: 1rem;
+    color: var(--bright);
+    letter-spacing: 0.1em;
+  }
+
+  .ref-code {
+    font-size: 0.72rem;
+    color: var(--dim);
+    letter-spacing: 0.05em;
+  }
+
+  /* REF SEPARATOR */
+  .ref-sep {
+    grid-column: 1 / -1;
+    padding: 0.45rem 0.8rem;
+    font-size: 0.62rem;
+    letter-spacing: 0.22em;
+    text-transform: uppercase;
+    color: var(--dim);
+    border-bottom: 1px solid var(--border);
+    border-top: 1px solid var(--border);
+    background: var(--bg);
+  }
+
+  /* STATUS */
+  .status {
+    font-size: 0.62rem;
+    color: var(--muted);
+    letter-spacing: 0.12em;
+    padding: 0.4rem 1rem;
+    border-top: 1px solid var(--border);
+    text-transform: uppercase;
+  }
+</style>
+</head>
+<body>
+
+<header>
+  <h1>Tap Code</h1>
+  <p>Traductor bidireccional · Polibio 5×5</p>
+</header>
+
+<div class="translator">
+  <div class="mode-bar">
+    <button class="mode-btn active" id="btn-text2tap" onclick="setMode('text2tap')">
+      Texto → Tap Code
+    </button>
+    <button class="mode-btn" id="btn-tap2text" onclick="setMode('tap2text')">
+      Tap Code → Texto
+    </button>
+  </div>
+
+  <div class="panel">
+    <div class="panel-label" id="input-label">Escribe texto</div>
+    <textarea id="input" placeholder="Escribe aquí..." spellcheck="false"></textarea>
+  </div>
+
+  <div class="arrow-row">
+    <div class="arrow-icon" onclick="swapMode()" title="Invertir">⇅</div>
+  </div>
+
+  <div class="output-box">
+    <div class="panel-label" id="output-label">Tap Code</div>
+    <div class="output-content" id="output"></div>
+    <div class="status" id="status">— esperando entrada</div>
+    <button class="copy-btn" id="copy-btn" onclick="copyOutput()">copiar</button>
+  </div>
+</div>
+
+<details>
+  <summary>Tabla de referencia</summary>
+  <div class="ref-grid" id="ref-grid"></div>
+</details>
+
+<script>
+// ── TAP CODE MAP ─────────────────────────────────────────────────
+const TAP = {
+  // Letras — cuadrícula Polibio 5×5 (K comparte código con C)
+  a:'• •',    b:'• ••',   c:'• •••',  d:'• ••••',  e:'• •••••',
+  f:'•• •',   g:'•• ••',  h:'•• •••', i:'•• ••••', j:'•• •••••',
+  k:'• •••',
+  l:'••• •',  m:'••• ••', n:'••• •••',o:'••• ••••',p:'••• •••••',
+  q:'•••• •', r:'•••• ••',s:'•••• •••',t:'•••• ••••',u:'•••• •••••',
+  v:'••••• •',w:'••••• ••',x:'••••• •••',y:'••••• ••••',z:'••••• •••••',
+  // Números — fila extendida 6 (1–5) y fila 7 (6–0)
+  '1':'•••••• •',      '2':'•••••• ••',     '3':'•••••• •••',
+  '4':'•••••• ••••',   '5':'•••••• •••••',
+  '6':'••••••• •',     '7':'••••••• ••',    '8':'••••••• •••',
+  '9':'••••••• ••••',  '0':'••••••• •••••'
+};
+
+// Mapa inverso: puntos → carácter
+const TAP_REV = {};
+for (const [ch, dots] of Object.entries(TAP)) {
+  if (!TAP_REV[dots]) TAP_REV[dots] = ch; // primero gana (c antes que k)
+}
+
+let mode = 'text2tap';
+
+function setMode(m) {
+  mode = m;
+  document.getElementById('btn-text2tap').classList.toggle('active', m === 'text2tap');
+  document.getElementById('btn-tap2text').classList.toggle('active', m === 'tap2text');
+  const inp = document.getElementById('input');
+  inp.value = '';
+  document.getElementById('output').textContent = '';
+  document.getElementById('status').textContent = '— esperando entrada';
+  if (m === 'text2tap') {
+    inp.placeholder = 'Escribe texto...';
+    document.getElementById('input-label').textContent = 'Escribe texto';
+    document.getElementById('output-label').textContent = 'Tap Code';
+    document.getElementById('output').className = 'output-content tap';
+  } else {
+    inp.placeholder = 'Pega tap code (• • / •• ••• / ...) o escribe puntos...';
+    document.getElementById('input-label').textContent = 'Tap Code';
+    document.getElementById('output-label').textContent = 'Texto';
+    document.getElementById('output').className = 'output-content';
+  }
+  inp.focus();
+}
+
+function translate() {
+  const raw = document.getElementById('input').value;
+  if (!raw.trim()) {
+    document.getElementById('output').textContent = '';
+    document.getElementById('status').textContent = '— esperando entrada';
+    return;
+  }
+  mode === 'text2tap' ? doText2Tap(raw) : doTap2Text(raw);
+}
+
+function doText2Tap(text) {
+  const lines = text.split('\n');
+  const out = [];
+  let chars = 0, unknown = 0;
+
+  for (const line of lines) {
+    const words = line.split(' ');
+    const wordCodes = [];
+    for (const word of words) {
+      if (!word) { wordCodes.push(''); continue; }
+      const codes = [];
+      for (const ch of word.toLowerCase()) {
+        if (TAP[ch]) { codes.push(TAP[ch]); chars++; }
+        else if (ch === ' ') { codes.push(''); }
+        else { codes.push('?'); unknown++; }
+      }
+      wordCodes.push(codes.join('  '));
+    }
+    out.push(wordCodes.join('   /   '));
+  }
+
+  document.getElementById('output').textContent = out.join('\n');
+  const info = `${chars} carácter${chars !== 1 ? 'es' : ''} traducido${chars !== 1 ? 's' : ''}` +
+    (unknown ? ` · ${unknown} sin código` : '');
+  document.getElementById('status').textContent = info;
+}
+
+function doTap2Text(text) {
+  let normalized = text
+    .replace(/·/g, '•')
+    .replace(/\./g, '•')
+    .replace(/\*/g, '•');
+
+  const wordBlocks = normalized.split(/\/|\n/);
+  const outWords = [];
+  let found = 0, miss = 0;
+
+  for (const block of wordBlocks) {
+    const letterTokens = block.trim().split(/\s{2,}/);
+    let word = '';
+    for (const token of letterTokens) {
+      const t = token.trim();
+      if (!t) continue;
+      if (TAP_REV[t]) { word += TAP_REV[t]; found++; }
+      else { word += '?'; miss++; }
+    }
+    if (word) outWords.push(word);
+  }
+
+  document.getElementById('output').textContent = outWords.join(' ');
+  const info = `${found} carácter${found !== 1 ? 'es' : ''} decodificado${found !== 1 ? 's' : ''}` +
+    (miss ? ` · ${miss} no reconocido${miss !== 1 ? 's' : ''}` : '');
+  document.getElementById('status').textContent = info;
+}
+
+function swapMode() {
+  const currentOutput = document.getElementById('output').textContent;
+  setMode(mode === 'text2tap' ? 'tap2text' : 'text2tap');
+  document.getElementById('input').value = currentOutput;
+  translate();
+}
+
+function copyOutput() {
+  const text = document.getElementById('output').textContent;
+  if (!text) return;
+  navigator.clipboard.writeText(text).then(() => {
+    const btn = document.getElementById('copy-btn');
+    btn.textContent = 'copiado ✓';
+    btn.classList.add('copied');
+    setTimeout(() => { btn.textContent = 'copiar'; btn.classList.remove('copied'); }, 1500);
+  });
+}
+
+// ── TABLA DE REFERENCIA ───────────────────────────────────────────
+function buildRef() {
+  const grid = document.getElementById('ref-grid');
+
+  const letters = Object.entries(TAP).filter(([k]) => k !== 'k' && !/\d/.test(k));
+  const numbers = Object.entries(TAP)
+    .filter(([k]) => /\d/.test(k))
+    .sort((a, b) => {
+      const va = a[0] === '0' ? 10 : +a[0];
+      const vb = b[0] === '0' ? 10 : +b[0];
+      return va - vb;
+    });
+
+  for (const [ch, dots] of letters) {
+    const cell = document.createElement('div');
+    cell.className = 'ref-cell';
+    const extra = ch === 'c' ? ' / K' : '';
+    cell.innerHTML = `<span class="ref-letter">${ch.toUpperCase()}${extra}</span><span class="ref-code">${dots}</span>`;
+    grid.appendChild(cell);
+  }
+
+  const sep = document.createElement('div');
+  sep.className = 'ref-sep';
+  sep.textContent = 'Números';
+  grid.appendChild(sep);
+
+  for (const [ch, dots] of numbers) {
+    const cell = document.createElement('div');
+    cell.className = 'ref-cell';
+    cell.innerHTML = `<span class="ref-letter">${ch}</span><span class="ref-code">${dots}</span>`;
+    grid.appendChild(cell);
+  }
+}
+
+// ── INIT ──────────────────────────────────────────────────────────
+document.getElementById('input').addEventListener('input', translate);
+buildRef();
+setMode('text2tap');
+</script>
+</body>
+</html>
