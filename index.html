@@ -10,14 +10,14 @@
   *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
 
   :root {
-    --bg: #0e0e0e;
+    --bg:      #0e0e0e;
     --surface: #161616;
-    --border: #2a2a2a;
-    --muted: #444;
-    --dim: #888;
-    --text: #d8d8d8;
-    --bright: #f0f0f0;
-    --accent: #e8e8e8;
+    --border:  #2a2a2a;
+    --muted:   #444;
+    --dim:     #888;
+    --text:    #d8d8d8;
+    --bright:  #f0f0f0;
+    --accent:  #e8e8e8;
   }
 
   body {
@@ -34,7 +34,7 @@
   header {
     width: 100%;
     max-width: 700px;
-    margin-bottom: 3rem;
+    margin-bottom: 2rem;
     border-bottom: 1px solid var(--border);
     padding-bottom: 1.2rem;
   }
@@ -55,6 +55,60 @@
     margin-top: 0.4rem;
   }
 
+  /* ── CONFIG PANEL ─────────────────────────────────────────── */
+  .config-panel {
+    width: 100%;
+    max-width: 700px;
+    border: 1px solid var(--border);
+    margin-bottom: 1.5rem;
+    background: var(--surface);
+  }
+
+  .config-rows {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+  }
+
+  .config-row {
+    padding: 0.85rem 1rem 0.9rem;
+    display: flex;
+    flex-direction: column;
+    gap: 0.5rem;
+    border-right: 1px solid var(--border);
+  }
+  .config-row:last-child { border-right: none; }
+
+  .config-key {
+    font-size: 0.6rem;
+    letter-spacing: 0.18em;
+    color: var(--dim);
+    text-transform: uppercase;
+  }
+
+  .config-input {
+    background: transparent;
+    border: none;
+    border-bottom: 1px solid var(--border);
+    color: var(--bright);
+    font-family: 'Share Tech Mono', monospace;
+    font-size: 1.05rem;
+    padding: 0.2rem 0 0.25rem;
+    outline: none;
+    width: 100%;
+    letter-spacing: 0.22em;
+    transition: border-color 0.15s;
+  }
+  .config-input:focus  { border-bottom-color: var(--dim); }
+  .config-input::placeholder { color: var(--muted); letter-spacing: 0.1em; font-size: 0.9rem; }
+
+  .config-hint {
+    font-size: 0.58rem;
+    color: var(--muted);
+    letter-spacing: 0.09em;
+    line-height: 1.5;
+  }
+
+  /* ── TRANSLATOR ───────────────────────────────────────────── */
   .translator {
     width: 100%;
     max-width: 700px;
@@ -63,7 +117,6 @@
     gap: 0;
   }
 
-  /* MODE TOGGLE */
   .mode-bar {
     display: flex;
     border: 1px solid var(--border);
@@ -84,16 +137,9 @@
     transition: all 0.15s;
     border-right: 1px solid var(--border);
   }
-
   .mode-btn:last-child { border-right: none; }
+  .mode-btn.active { background: var(--bright); color: var(--bg); font-weight: bold; }
 
-  .mode-btn.active {
-    background: var(--bright);
-    color: var(--bg);
-    font-weight: bold;
-  }
-
-  /* PANELS */
   .panel {
     border: 1px solid var(--border);
     background: var(--surface);
@@ -121,10 +167,9 @@
     resize: none;
     min-height: 130px;
   }
-
   textarea::placeholder { color: var(--muted); }
 
-  /* ARROW */
+  /* ── ARROW ROW ────────────────────────────────────────────── */
   .arrow-row {
     display: flex;
     align-items: center;
@@ -133,16 +178,9 @@
     border-left: 1px solid var(--border);
     border-right: 1px solid var(--border);
     background: var(--bg);
-    position: relative;
   }
-
   .arrow-row::before,
-  .arrow-row::after {
-    content: '';
-    flex: 1;
-    height: 1px;
-    background: var(--border);
-  }
+  .arrow-row::after { content: ''; flex: 1; height: 1px; background: var(--border); }
 
   .arrow-icon {
     width: 32px;
@@ -159,17 +197,12 @@
     transition: all 0.15s;
     user-select: none;
   }
+  .arrow-icon:hover { background: var(--border); color: var(--bright); }
 
-  .arrow-icon:hover {
-    background: var(--border);
-    color: var(--bright);
-  }
-
-  /* OUTPUT */
+  /* ── OUTPUT ───────────────────────────────────────────────── */
   .output-box {
     border: 1px solid var(--border);
     background: var(--bg);
-    position: relative;
   }
 
   .output-content {
@@ -182,39 +215,51 @@
     white-space: pre-wrap;
     letter-spacing: 0.05em;
   }
+  .output-content.tap { font-size: 1rem; letter-spacing: 0.08em; color: var(--accent); }
 
-  .output-content.tap {
-    font-size: 1rem;
-    letter-spacing: 0.08em;
-    color: var(--accent);
+  .output-footer {
+    display: flex;
+    align-items: stretch;
+    justify-content: space-between;
+    border-top: 1px solid var(--border);
   }
 
-  .output-content .word-sep {
+  .status {
+    font-size: 0.62rem;
     color: var(--muted);
-    margin: 0 0.2rem;
-    font-size: 0.8em;
+    letter-spacing: 0.12em;
+    padding: 0.45rem 1rem;
+    text-transform: uppercase;
+    flex: 1;
+    display: flex;
+    align-items: center;
   }
 
-  .copy-btn {
-    position: absolute;
-    bottom: 0.6rem;
-    right: 0.6rem;
-    background: var(--border);
+  .output-actions {
+    display: flex;
+    border-left: 1px solid var(--border);
+    flex-shrink: 0;
+  }
+
+  .regen-btn, .copy-btn {
+    background: transparent;
     border: none;
+    border-left: 1px solid var(--border);
     color: var(--dim);
     font-family: 'Share Tech Mono', monospace;
     font-size: 0.62rem;
     letter-spacing: 0.1em;
-    padding: 0.3rem 0.6rem;
+    padding: 0.45rem 0.75rem;
     cursor: pointer;
     text-transform: uppercase;
     transition: all 0.15s;
+    white-space: nowrap;
   }
-
-  .copy-btn:hover { background: var(--muted); color: var(--bright); }
+  .regen-btn { border-left: none; }
+  .regen-btn:hover, .copy-btn:hover { background: var(--border); color: var(--bright); }
   .copy-btn.copied { color: var(--bright); background: var(--muted); }
 
-  /* REFERENCE TABLE */
+  /* ── REFERENCE TABLE ──────────────────────────────────────── */
   details {
     width: 100%;
     max-width: 700px;
@@ -236,15 +281,12 @@
     justify-content: space-between;
     align-items: center;
   }
-
   summary::after { content: '↓'; }
   details[open] summary::after { content: '↑'; }
 
   .ref-grid {
     display: grid;
     grid-template-columns: repeat(auto-fill, minmax(120px, 1fr));
-    gap: 0;
-    padding: 0;
   }
 
   .ref-cell {
@@ -269,7 +311,6 @@
     letter-spacing: 0.05em;
   }
 
-  /* REF SEPARATOR */
   .ref-sep {
     grid-column: 1 / -1;
     padding: 0.45rem 0.8rem;
@@ -281,16 +322,6 @@
     border-top: 1px solid var(--border);
     background: var(--bg);
   }
-
-  /* STATUS */
-  .status {
-    font-size: 0.62rem;
-    color: var(--muted);
-    letter-spacing: 0.12em;
-    padding: 0.4rem 1rem;
-    border-top: 1px solid var(--border);
-    text-transform: uppercase;
-  }
 </style>
 </head>
 <body>
@@ -300,6 +331,43 @@
   <p>Traductor bidireccional · Polibio 5×5</p>
 </header>
 
+<!-- ── PANEL DE CONFIGURACIÓN ───────────────────────────────── -->
+<div class="config-panel">
+  <div class="panel-label">Configuración de salida</div>
+  <div class="config-rows">
+
+    <div class="config-row">
+      <span class="config-key">Símbolos de golpe</span>
+      <input type="text"
+             id="cfg-symbols"
+             class="config-input"
+             value="•"
+             spellcheck="false"
+             placeholder="| ÷ π × •">
+      <span class="config-hint">
+        Cada carácter es un golpe.<br>
+        Con varios, se eligen al azar.
+      </span>
+    </div>
+
+    <div class="config-row">
+      <span class="config-key">Separador de palabras</span>
+      <input type="text"
+             id="cfg-sep"
+             class="config-input"
+             value="/"
+             spellcheck="false"
+             placeholder="/ — ~ · ×">
+      <span class="config-hint">
+        Marca el límite entre palabras.<br>
+        Úsalo también al decodificar.
+      </span>
+    </div>
+
+  </div>
+</div>
+
+<!-- ── TRADUCTOR ─────────────────────────────────────────────── -->
 <div class="translator">
   <div class="mode-bar">
     <button class="mode-btn active" id="btn-text2tap" onclick="setMode('text2tap')">
@@ -321,64 +389,101 @@
 
   <div class="output-box">
     <div class="panel-label" id="output-label">Tap Code</div>
-    <div class="output-content" id="output"></div>
-    <div class="status" id="status">— esperando entrada</div>
-    <button class="copy-btn" id="copy-btn" onclick="copyOutput()">copiar</button>
+    <div class="output-content tap" id="output"></div>
+    <div class="output-footer">
+      <div class="status" id="status">— esperando entrada</div>
+      <div class="output-actions">
+        <button class="regen-btn" title="Regenerar combinación aleatoria" onclick="regen()">↺ nuevo</button>
+        <button class="copy-btn" id="copy-btn" onclick="copyOutput()">copiar</button>
+      </div>
+    </div>
   </div>
 </div>
 
+<!-- ── TABLA DE REFERENCIA ───────────────────────────────────── -->
 <details>
   <summary>Tabla de referencia</summary>
   <div class="ref-grid" id="ref-grid"></div>
 </details>
 
 <script>
-// ── TAP CODE MAP ─────────────────────────────────────────────────
+// ── TAP CODE MAP ──────────────────────────────────────────────────
 const TAP = {
-  // Letras — cuadrícula Polibio 5×5 (K comparte código con C)
-  a:'• •',    b:'• ••',   c:'• •••',  d:'• ••••',  e:'• •••••',
-  f:'•• •',   g:'•• ••',  h:'•• •••', i:'•• ••••', j:'•• •••••',
+  // Letras — Polibio 5×5 (K comparte código con C)
+  a:'• •',     b:'• ••',    c:'• •••',   d:'• ••••',  e:'• •••••',
+  f:'•• •',    g:'•• ••',   h:'•• •••',  i:'•• ••••', j:'•• •••••',
   k:'• •••',
-  l:'••• •',  m:'••• ••', n:'••• •••',o:'••• ••••',p:'••• •••••',
-  q:'•••• •', r:'•••• ••',s:'•••• •••',t:'•••• ••••',u:'•••• •••••',
-  v:'••••• •',w:'••••• ••',x:'••••• •••',y:'••••• ••••',z:'••••• •••••',
+  l:'••• •',   m:'••• ••',  n:'••• •••', o:'••• ••••',p:'••• •••••',
+  q:'•••• •',  r:'•••• ••', s:'•••• •••',t:'•••• ••••',u:'•••• •••••',
+  v:'••••• •', w:'••••• ••',x:'••••• •••',y:'••••• ••••',z:'••••• •••••',
   // Números — fila extendida 6 (1–5) y fila 7 (6–0)
-  '1':'•••••• •',      '2':'•••••• ••',     '3':'•••••• •••',
-  '4':'•••••• ••••',   '5':'•••••• •••••',
-  '6':'••••••• •',     '7':'••••••• ••',    '8':'••••••• •••',
-  '9':'••••••• ••••',  '0':'••••••• •••••'
+  '1':'•••••• •',     '2':'•••••• ••',    '3':'•••••• •••',
+  '4':'•••••• ••••',  '5':'•••••• •••••',
+  '6':'••••••• •',    '7':'••••••• ••',   '8':'••••••• •••',
+  '9':'••••••• ••••', '0':'••••••• •••••'
 };
 
-// Mapa inverso: puntos → carácter
+// Mapa inverso: patrón → carácter
 const TAP_REV = {};
 for (const [ch, dots] of Object.entries(TAP)) {
-  if (!TAP_REV[dots]) TAP_REV[dots] = ch; // primero gana (c antes que k)
+  if (!TAP_REV[dots]) TAP_REV[dots] = ch;
 }
 
 let mode = 'text2tap';
 
-function setMode(m) {
-  mode = m;
+// ── CONFIGURACIÓN ─────────────────────────────────────────────────
+function getSymbols() {
+  const raw = document.getElementById('cfg-symbols').value;
+  // Caracteres únicos, sin espacios ni tabulaciones
+  const chars = [...new Set([...raw])].filter(c => c !== ' ' && c !== '\t' && c !== '\n');
+  return chars.length > 0 ? chars : ['•'];
+}
+
+function getWordSep() {
+  const v = document.getElementById('cfg-sep').value;
+  return v.length > 0 ? v : '/';
+}
+
+function randSym(syms) {
+  return syms[Math.floor(Math.random() * syms.length)];
+}
+
+// Convierte un patrón canónico (•-based) usando símbolos actuales al azar
+function applySymbols(pattern, syms) {
+  return [...pattern].map(c => c === '•' ? randSym(syms) : c).join('');
+}
+
+// Escapa una cadena para usarla en RegExp
+function escapeRE(s) {
+  return s.replace(/[.*+?^${}()|[\]\\]/g, '\\$&');
+}
+
+// ── MODO ──────────────────────────────────────────────────────────
+// Solo actualiza etiquetas y clases — NO toca el contenido de los cuadros
+function applyModeUI(m) {
   document.getElementById('btn-text2tap').classList.toggle('active', m === 'text2tap');
   document.getElementById('btn-tap2text').classList.toggle('active', m === 'tap2text');
   const inp = document.getElementById('input');
-  inp.value = '';
-  document.getElementById('output').textContent = '';
-  document.getElementById('status').textContent = '— esperando entrada';
   if (m === 'text2tap') {
     inp.placeholder = 'Escribe texto...';
-    document.getElementById('input-label').textContent = 'Escribe texto';
+    document.getElementById('input-label').textContent  = 'Escribe texto';
     document.getElementById('output-label').textContent = 'Tap Code';
     document.getElementById('output').className = 'output-content tap';
   } else {
-    inp.placeholder = 'Pega tap code (• • / •• ••• / ...) o escribe puntos...';
-    document.getElementById('input-label').textContent = 'Tap Code';
+    inp.placeholder = 'Pega tap code con tus símbolos y separador configurados...';
+    document.getElementById('input-label').textContent  = 'Tap Code';
     document.getElementById('output-label').textContent = 'Texto';
     document.getElementById('output').className = 'output-content';
   }
-  inp.focus();
 }
 
+// Llamada desde los botones de modo: mismo comportamiento que ⇅
+function setMode(m) {
+  if (m === mode) return;   // ya estamos en ese modo, nada que hacer
+  swapMode();
+}
+
+// ── TRADUCCIÓN ────────────────────────────────────────────────────
 function translate() {
   const raw = document.getElementById('input').value;
   if (!raw.trim()) {
@@ -390,67 +495,106 @@ function translate() {
 }
 
 function doText2Tap(text) {
-  const lines = text.split('\n');
-  const out = [];
+  const syms    = getSymbols();
+  const wordSep = getWordSep();
+  const lines   = text.split('\n');
+  const out     = [];
   let chars = 0, unknown = 0;
 
   for (const line of lines) {
-    const words = line.split(' ');
+    const words     = line.split(' ');
     const wordCodes = [];
+
     for (const word of words) {
-      if (!word) { wordCodes.push(''); continue; }
+      if (!word) continue;
       const codes = [];
       for (const ch of word.toLowerCase()) {
-        if (TAP[ch]) { codes.push(TAP[ch]); chars++; }
-        else if (ch === ' ') { codes.push(''); }
-        else { codes.push('?'); unknown++; }
+        if (TAP[ch]) {
+          // Cada golpe (•) del patrón se sustituye por un símbolo al azar
+          codes.push(applySymbols(TAP[ch], syms));
+          chars++;
+        } else {
+          codes.push('?');
+          unknown++;
+        }
       }
-      wordCodes.push(codes.join('  '));
+      if (codes.length) wordCodes.push(codes.join('  '));
     }
-    out.push(wordCodes.join('   /   '));
+
+    // Palabras separadas por el separador configurado (con espacios de margen)
+    out.push(wordCodes.join(`   ${wordSep}   `));
   }
 
   document.getElementById('output').textContent = out.join('\n');
-  const info = `${chars} carácter${chars !== 1 ? 'es' : ''} traducido${chars !== 1 ? 's' : ''}` +
-    (unknown ? ` · ${unknown} sin código` : '');
-  document.getElementById('status').textContent = info;
+  document.getElementById('status').textContent =
+    `${chars} carácter${chars !== 1 ? 'es' : ''} traducido${chars !== 1 ? 's' : ''}` +
+    (unknown ? ` · ${unknown} sin código` : '') +
+    (getSymbols().length > 1 ? ' · aleatorio' : '');
 }
 
 function doTap2Text(text) {
-  let normalized = text
+  const syms    = getSymbols();
+  const wordSep = getWordSep();
+
+  // 1. Normalizar: variantes comunes de punto → •
+  let norm = text
     .replace(/·/g, '•')
     .replace(/\./g, '•')
     .replace(/\*/g, '•');
 
-  const wordBlocks = normalized.split(/\/|\n/);
+  // 2. Normalizar todos los símbolos configurados → •
+  for (const sym of syms) {
+    if (sym !== '•') {
+      norm = norm.replace(new RegExp(escapeRE(sym), 'g'), '•');
+    }
+  }
+
+  // 3. Dividir por el separador de palabras o saltos de línea
+  const wordBlocks = norm.split(new RegExp(`${escapeRE(wordSep)}|\\n`));
+
   const outWords = [];
   let found = 0, miss = 0;
 
   for (const block of wordBlocks) {
-    const letterTokens = block.trim().split(/\s{2,}/);
+    // Letras dentro de cada palabra separadas por 2+ espacios
+    const tokens = block.trim().split(/\s{2,}/);
     let word = '';
-    for (const token of letterTokens) {
+    for (const token of tokens) {
       const t = token.trim();
       if (!t) continue;
       if (TAP_REV[t]) { word += TAP_REV[t]; found++; }
-      else { word += '?'; miss++; }
+      else             { word += '?';        miss++;  }
     }
     if (word) outWords.push(word);
   }
 
   document.getElementById('output').textContent = outWords.join(' ');
-  const info = `${found} carácter${found !== 1 ? 'es' : ''} decodificado${found !== 1 ? 's' : ''}` +
+  document.getElementById('status').textContent =
+    `${found} carácter${found !== 1 ? 'es' : ''} decodificado${found !== 1 ? 's' : ''}` +
     (miss ? ` · ${miss} no reconocido${miss !== 1 ? 's' : ''}` : '');
-  document.getElementById('status').textContent = info;
 }
 
+// ── INVERTIR MODO ─────────────────────────────────────────────────
+// Intercambia input y output directamente — SIN re-traducir para no
+// re-aleatorizar los símbolos. Solo ↺ nuevo debe cambiar la aleatoriedad.
 function swapMode() {
-  const currentOutput = document.getElementById('output').textContent;
-  setMode(mode === 'text2tap' ? 'tap2text' : 'text2tap');
-  document.getElementById('input').value = currentOutput;
+  const oldInput  = document.getElementById('input').value;
+  const oldOutput = document.getElementById('output').textContent;
+  mode = mode === 'text2tap' ? 'tap2text' : 'text2tap';
+  applyModeUI(mode);
+  document.getElementById('input').value          = oldOutput;
+  document.getElementById('output').textContent   = oldInput;
+  document.getElementById('status').textContent   = '— contenido intercambiado';
+  document.getElementById('input').focus();
+}
+
+// ── REGENERAR ────────────────────────────────────────────────────
+// Fuerza una nueva tirada aleatoria de símbolos sin tocar el input
+function regen() {
   translate();
 }
 
+// ── COPIAR ────────────────────────────────────────────────────────
 function copyOutput() {
   const text = document.getElementById('output').textContent;
   if (!text) return;
@@ -469,17 +613,14 @@ function buildRef() {
   const letters = Object.entries(TAP).filter(([k]) => k !== 'k' && !/\d/.test(k));
   const numbers = Object.entries(TAP)
     .filter(([k]) => /\d/.test(k))
-    .sort((a, b) => {
-      const va = a[0] === '0' ? 10 : +a[0];
-      const vb = b[0] === '0' ? 10 : +b[0];
-      return va - vb;
-    });
+    .sort((a, b) => (a[0] === '0' ? 10 : +a[0]) - (b[0] === '0' ? 10 : +b[0]));
 
   for (const [ch, dots] of letters) {
     const cell = document.createElement('div');
     cell.className = 'ref-cell';
     const extra = ch === 'c' ? ' / K' : '';
-    cell.innerHTML = `<span class="ref-letter">${ch.toUpperCase()}${extra}</span><span class="ref-code">${dots}</span>`;
+    cell.innerHTML = `<span class="ref-letter">${ch.toUpperCase()}${extra}</span>`
+                   + `<span class="ref-code">${dots}</span>`;
     grid.appendChild(cell);
   }
 
@@ -491,15 +632,26 @@ function buildRef() {
   for (const [ch, dots] of numbers) {
     const cell = document.createElement('div');
     cell.className = 'ref-cell';
-    cell.innerHTML = `<span class="ref-letter">${ch}</span><span class="ref-code">${dots}</span>`;
+    cell.innerHTML = `<span class="ref-letter">${ch}</span>`
+                   + `<span class="ref-code">${dots}</span>`;
     grid.appendChild(cell);
   }
 }
 
 // ── INIT ──────────────────────────────────────────────────────────
 document.getElementById('input').addEventListener('input', translate);
+// Retransladar en tiempo real cuando cambia la config
+document.getElementById('cfg-symbols').addEventListener('input', translate);
+document.getElementById('cfg-sep').addEventListener('input', translate);
+
 buildRef();
-setMode('text2tap');
+// Inicialización: aplica UI y limpia los cuadros solo al arrancar
+mode = 'text2tap';
+applyModeUI('text2tap');
+document.getElementById('input').value = '';
+document.getElementById('output').textContent = '';
+document.getElementById('status').textContent = '— esperando entrada';
+document.getElementById('input').focus();
 </script>
 </body>
 </html>
